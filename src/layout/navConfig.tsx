@@ -1,11 +1,15 @@
-import {
-  HomeOutlined,
-} from "@mui/icons-material";
+import NewChatButton from "../components/AiSelection/NewChat";
+import ChatHistory from "../components/AiSelection/ChatHistory";
 
 export const navConfig = [
   {
-    text: "Dashboard",
-    icon: <HomeOutlined />,
+    text: "",
+    icon: <NewChatButton />,
+    to: "/",
+  },
+  {
+    text: "",
+    icon: <ChatHistory />,
     to: "/",
   },
   

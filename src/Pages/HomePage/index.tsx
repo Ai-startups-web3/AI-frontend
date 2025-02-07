@@ -8,7 +8,9 @@ function HomePage() {
   const [selectedAI, setSelectedAI] = useState('Deepseek');
 
   return (
-    <Container>
+    <Container sx={{
+      height:"60vh"
+    }}>
       <Box sx={{
         display:"flex",
         justifyContent:"space-between"

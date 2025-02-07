@@ -1,6 +1,6 @@
 
 // const base_url_backend="https://backend-everything-37ada44e5086.herokuapp.com/v1"
-const base_url_backend="https://ai-prompt-generator-iwbe.onrender.com/backend/v1"
+const base_url_backend =import.meta.env.VITE_BASE_URL_BACKEND;
 
 // define endpoints here
   export const ApiEndpoint: Record<string, any> = {

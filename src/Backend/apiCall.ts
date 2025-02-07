@@ -3,8 +3,6 @@ import { RequestOptions } from '../Datatypes/interface';
 import { ApiEndpoint } from '../Datatypes/enums';
 import Cookies from 'js-cookie';
 
-const chatGptApiKey =" import.meta.env.VITE_OPENAI_API_KEY; "
-
 const Request = async ({ endpointId, slug, data, headers, params, isStream = false }: RequestOptions) => {
   const storedAccessToken = Cookies.get('access');
   const endpoint = ApiEndpoint[endpointId];
@@ -26,7 +24,7 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
       method: endpoint.method,
       headers: {
         ...endpoint.headers,
-        Authorization: endpoint.isChatGpt ? `Bearer ${chatGptApiKey}` : endpoint.withAuth ? `Bearer ${storedAccessToken}` : undefined,
+        Authorization:  endpoint.withAuth ? `Bearer ${storedAccessToken}` : undefined,
         "Accept": "text/event-stream"
       },
       body: endpoint.method !== 'GET' ? JSON.stringify(data) : undefined
@@ -76,7 +74,7 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
     url: fullUrl,
     headers: {
       ...endpoint.headers,
-      Authorization: endpoint.isChatGpt ? `Bearer ${chatGptApiKey}` : endpoint.withAuth ? `Bearer ${storedAccessToken}` : undefined,
+      Authorization: endpoint.withAuth ? `Bearer ${storedAccessToken}` : undefined,
       "Accept": "application/json"
     },
     params: params

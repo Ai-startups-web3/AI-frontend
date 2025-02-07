@@ -8,14 +8,14 @@ import Request from '../../../Backend/apiCall';
 
 export const loginUser = createAsyncThunk(
   'auth/login',
-  async ({ email, password, OnFormSuccess,userType }: LoginData, { rejectWithValue, dispatch }) => {
+  async ({ email, password, OnFormSuccess }: LoginData, { rejectWithValue, dispatch }) => {
     try {
       
       dispatch(setLoading({ isLoading: true }));
 
       const response = await Request({
         endpointId: "MAIN_LOGIN",
-        data: { userType,email, password,deviceId:"550e8400-e29b-41d4-a716-446655440000" },
+        data: { email, password,deviceId:"550e8400-e29b-41d4-a716-446655440000" },
       })
       
       // Assuming the response contains user information and a token
@@ -30,7 +30,7 @@ export const loginUser = createAsyncThunk(
       // };
       
       
-      dispatch(setCredentials({ user:response?.data?.email, token:{accessToken,refreshToken}, userType:response?.data?.category,isLoading:false }));
+      dispatch(setCredentials({ user:response?.data?.email, token:{accessToken,refreshToken}, userType:response?.data?.userType,isLoading:false }));
       OnFormSuccess()
       return response.data;
 

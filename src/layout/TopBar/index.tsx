@@ -19,6 +19,12 @@ import { ColorModeContext, getColors } from "../Theme/themes";
 
 import { motion } from "framer-motion";
 import "./style.css"
+import { useSelector } from "react-redux";
+import { isAuthenticated } from "../../lib/slices/auth/authSlice";
+import LogoutButton from "../../components/Logout";
+import LoginForm from "../../components/LoginForm";
+import { UserType } from "../../Datatypes/enums";
+import CustomDialog from "../../components/Dailog";
 
 
 
@@ -32,10 +38,13 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
   const theme = useTheme()
   const [isOn, setIsOn] = useState(false);
   const navigate = useNavigate()
+  const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
+  const isUserAuthenticated=useSelector(isAuthenticated)
   if (!colorMode) {
     // Handle the case where colorMode is undefined (e.g., context not yet initialized)
     return null; // or render a loading state or default content
   }
+
   const toggleSwitch = () => {
     colorMode.toggleColorMode()
     setIsOn(!isOn);
@@ -48,29 +57,30 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
       height: APP_BAR
     }} >
       <Toolbar>
-        
-      <IconButton
+
+        <IconButton
           onClick={() => setIsSidebarOpen()}
           sx={{
-            mt:2,
+            mt: 2,
             color: getColors().blueAccent[100]
           }}
         >
-          <MenuIcon/>
-        {/* <img src={`/Images/main-menu.png`} alt="logo" className="w-8 h-8 ml-4" /> */}
+          <MenuIcon />
+          {/* <img src={`/Images/main-menu.png`} alt="logo" className="w-8 h-8 ml-4" /> */}
         </IconButton>
         <Box
           onClick={() => navigate("/")}
-          sx={{ cursor: "pointer",mt: 2}}
+          sx={{ cursor: "pointer", mt: 2 }}
         >
           <img src={`/logo.svg`} alt="logo" className="w-8 h-8 ml-4" />
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
+
         <Stack
-        sx={{
-          mt: 1
-        }}
+          sx={{
+            mt: 1
+          }}
           direction="row"
           alignItems="center"
           spacing={{
@@ -78,6 +88,27 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
             sm: 1,
           }}
         >
+            <div>
+            {isUserAuthenticated ? (
+
+                <LogoutButton/>
+             
+              ):(
+                <CustomDialog
+                className="ml-2"
+                open={isDialogOpen}
+                onClose={() => setDialogOpen(!isDialogOpen)}
+                triggerButtonText={"Login"}
+                title={""}
+                description={"Only admin are availabale to login for now"}
+                >
+                <LoginForm
+                  loginTitle="Admin Login"
+                  OnFormSuccess={() => setDialogOpen(!isDialogOpen)}
+                  />
+              </CustomDialog>
+              )}
+          </div>
           <div className="switch" data-ison={isOn} onClick={toggleSwitch} style={{
             background: theme.palette.grey[900],
             border: "2px solid",
@@ -87,103 +118,6 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
               background: theme.palette.grey[100],
             }} />
           </div>
-        
-          {/* {address ? (
-            <>
-              <FlexBetween>
-                <div className="flex justify-between items-center mt-2 sm:mt-2 md:mt-0 lg:mt-0 mx-2 ">
-                  <Button
-                    className=""
-                    id="demo-customized-button"
-                    aria-controls={open ? 'menu-list' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    disableElevation
-                    onClick={(event: any) => handleClick(event)}
-                    sx={{
-                      "&:hover": {
-                        background: "none",
-                      },
-                    }}
-                  >
-                    <Avatar>
-                      <img src="/img/21.png" alt="img"
-                        width={50}
-                        height={50}
-                        style={{
-                          display: "block",
-                          objectFit: "cover",
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                        }} />
-                    </Avatar>
-                  </Button>
-
-                  <StyledMenu
-                    id="demo-customized-menu"
-                    MenuListProps={{
-                      "aria-labelledby": "demo-customized-button",
-                    }}
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                  >
-                    <div className="text-gray font-black text-sm tracking-wide pb-9">
-                      Hi WEB3 User!
-                    </div>
-                    <Typography
-                      sx={{
-                        position: "relative",
-                        left: "10%",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                      variant="body2"
-                      color="textSecondary"
-                    >
-                      {address && address.slice(0, 3) + "..." + address.slice(-4)}
-                      <ContentCopyOutlinedIcon
-                        onClick={handleCopySmartWalletAddress}
-                        sx={iconClickedStyle}
-                      />
-                    </Typography>
-
-                    <Paper>
-                      <StyledMenuItem>
-                        <Avatar>
-                          <Person4OutlinedIcon />
-                        </Avatar>
-                        <Typography onClick={() => navigate("/profile")} >
-
-                          Profile
-                        </Typography>
-                      </StyledMenuItem>
-                    </Paper> */}
-                    {/* <Paper>
-
-                      <StyledMenuItem >
-                        <Avatar>
-                          <RedeemTwoToneIcon />
-                        </Avatar>
-                      </StyledMenuItem>
-
-                    </Paper> */}
-
-                    {/* <Paper>
-                      <StyledMenuItem >
-                        <Avatar>
-                          <LogoutOutlinedIcon />
-                        </Avatar>
-                        <Typography>Log Out</Typography>
-                      </StyledMenuItem>
-                    </Paper> */}
-                  {/* </StyledMenu>
-                </div>
-              </FlexBetween>
-            </>
-          ) : null} */}
         </Stack>
       </Toolbar>
     </AppBar>

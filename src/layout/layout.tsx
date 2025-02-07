@@ -18,7 +18,7 @@ export default function DashboardLayout() {
   const [theme, colorMode] = useMode();
   const isNonMobile = useMediaQuery("(min-width: 766px)");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [showOutlet, setShowOutlet] = useState<boolean>(false);
+  const [, setShowOutlet] = useState<boolean>(false);
   const APP_BAR = "64px";
   const handleSideBarState = () => {
     setIsSidebarOpen(!isSidebarOpen);

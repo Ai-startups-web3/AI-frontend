@@ -12,3 +12,7 @@ export enum AIModel {
   ChatGPT = 'ChatGPT',
   Gemini = 'Gemini'
 }
+
+export enum Pages {
+  Home=""
+}

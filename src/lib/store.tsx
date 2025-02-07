@@ -1,12 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import logger from 'redux-logger'
-// import authReducer from "./slices/Auth/AuthSlice"
+import authReducer from "./slices/auth/authSlice"
 import chatReducer from "./slices/Ai/AiSlice"
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-        // auth:authReducer,
+        auth:authReducer,
         aiChat: chatReducer,
     }, 
       middleware:getDefaultMiddlerware =>

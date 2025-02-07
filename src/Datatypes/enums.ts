@@ -13,6 +13,11 @@ export enum AIModel {
   Gemini = 'Gemini'
 }
 
+export enum UserType {
+  ADMIN = "ADMIN",
+  USER = "USER"
+}
+
 export enum Pages {
   Home=""
 }

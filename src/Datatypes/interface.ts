@@ -1,4 +1,3 @@
-import { UserType } from "./enums";
 
 export interface RequestOptions {
   endpointId:string;

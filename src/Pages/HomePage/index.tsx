@@ -9,7 +9,7 @@ function HomePage() {
 
   return (
     <Container sx={{
-      height:"60vh"
+      height:"foxed"
     }}>
       <Box sx={{
         display:"flex",

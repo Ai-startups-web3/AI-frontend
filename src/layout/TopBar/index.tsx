@@ -23,10 +23,7 @@ import { useSelector } from "react-redux";
 import { isAuthenticated } from "../../lib/slices/auth/authSlice";
 import LogoutButton from "../../components/Logout";
 import LoginForm from "../../components/LoginForm";
-import { UserType } from "../../Datatypes/enums";
 import CustomDialog from "../../components/Dailog";
-
-
 
 interface HeaderProps {
   setIsSidebarOpen: () => void;

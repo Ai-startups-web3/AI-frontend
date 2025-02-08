@@ -24,7 +24,7 @@ const AiPromptGenerator = () => {
     setError('');
     dispatch(fetchChatResponse({ newMessageId: uuidv4(), userMessage: input, aiType: 'Deepseek', historyId: activeHistoryId || "" }));
     setInput('');
-    
+
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -35,28 +35,40 @@ const AiPromptGenerator = () => {
   };
 
   return (
-    <Box sx={{ margin: 'auto', padding: '20px', maxWidth: 600 }}>
+    <Box sx={{ margin: 'auto', padding: '20px', }}>
       <Paper elevation={3} sx={{ overflowY: 'auto', padding: '20px', borderRadius: '8px', height: "70vh" }}>
         <Typography variant="h5" sx={{ marginBottom: '16px', textAlign: 'center' }}>
           Chat with AI
         </Typography>
 
         <Box>
-        <Box>
-          {messages.map((message: { role: string; content: any; }, index: Key | null | undefined) => (
-            <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', margin: '8px 0', textAlign: message.role === 'user' ? 'right' : 'left' }}>
-              {message.role === 'user' ? (
-                <Avatar sx={{ marginLeft: 'auto', marginRight: '8px' }}>ME</Avatar>
-              ) : (
-                <Avatar sx={{ marginRight: '8px' }}>AI</Avatar>
-              )}
-              <Box sx={{ maxWidth: '75%', wordWrap: 'break-word', padding: '8px', borderRadius: '20px', boxShadow: message.role === 'user' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none' }}>
-                <MarkdownBlock code={message.content} />
+          <Box>
+            {messages.map((message: { image?: string, role: string; content: any; }, index: Key | null | undefined) => (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', margin: '8px 0', textAlign: message.role === 'user' ? 'right' : 'left' }}>
+                {message.role === 'user' ? (
+                  <Avatar sx={{ marginLeft: 'auto', marginRight: '8px' }}>ME</Avatar>
+                ) : (
+                  <Avatar sx={{ marginRight: '8px' }}>AI</Avatar>
+                )}
+                <Box sx={{ wordWrap: 'break-word', padding: '8px', borderRadius: '20px', boxShadow: message.role === 'user' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none' }}>
+                  <MarkdownBlock code={message.content} />
+                  {message.image &&
+                    <>
+                      <Typography variant='h5'>
+                        Content Image
+                      </Typography>
+                      <img
+                        src={message.image}
+                        alt="Content"
+                        style={{ maxWidth: '50%', borderRadius: '10px' }}
+                      />
+                    </>
+                  }
+                </Box>
               </Box>
-            </Box>
-          ))}
-        
-        </Box>
+            ))}
+
+          </Box>
           {loading && (
             <Typography variant="body2" sx={{ textAlign: 'center', mt: 2 }}>
               Loading response...

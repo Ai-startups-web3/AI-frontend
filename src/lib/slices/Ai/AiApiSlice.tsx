@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { addMessage, setLoading, setActiveHistory, updateContent } from './AiSlice';
+import { addMessage, setLoading, setActiveHistory, updateContent, addImage } from './AiSlice';
 import { ChatMessage } from './AiSlice';
 import Request from '../../../Backend/apiCall';
 import { v4 as uuidv4 } from 'uuid';  // Import UUID library
@@ -23,8 +23,6 @@ export const fetchChatResponse = createAsyncThunk(
     const state: any = getState();
     const history = state.aiChat.histories.find((h: { historyId: string; }) => h.historyId === currentHistoryId);
 
-    console.log(history);
-
     try {
       const response = await Request({
         endpointId: "AiPrompt",
@@ -39,13 +37,16 @@ export const fetchChatResponse = createAsyncThunk(
         message: {id:newMessageIdAssistant, role: "assistant", content: "" },
       })
     );
+ 
     for await (const chunk of response.stream()) {
+      if (typeof chunk === 'string') {
         botMessage += chunk;
-        dispatch(updateContent({ historyId: currentHistoryId,messageId:newMessageIdAssistant, newContent: botMessage }));
+        dispatch(updateContent({ historyId: currentHistoryId, messageId: newMessageIdAssistant, newContent: botMessage }));
+      } else if (chunk.image) {
+        dispatch(addImage({ historyId: currentHistoryId, messageId: newMessageIdAssistant, image: chunk.image }));
+      }
     }
-
     } catch (error) {
-      console.error('Error fetching response:', error);
       throw error;
     } finally {
       dispatch(setLoading(false));

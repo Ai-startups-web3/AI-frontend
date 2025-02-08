@@ -6,6 +6,7 @@ export interface ChatMessage {
   role: string; 
   // 'user' or 'assistant'
   content: string;
+  image?:string
 }
 
 export interface ChatHistory {
@@ -47,10 +48,7 @@ const chatSlice = createSlice({
     },
 
     updateContent: (state, action: PayloadAction<{ historyId: string; messageId: string; newContent: string }>) => {
-      console.log("logging");
-      
       const { historyId, messageId, newContent } = action.payload;
-      console.log(historyId,messageId,newContent);
       
       const history = state.histories.find(h => h.historyId === historyId);
       if (history) {
@@ -60,6 +58,18 @@ const chatSlice = createSlice({
         }
       }
     },
+
+    addImage: (state, action: PayloadAction<{ historyId: string; messageId: string; image: string }>) => {
+      const { historyId, messageId, image } = action.payload;
+      const history = state.histories.find(h => h.historyId === historyId);
+      if (history) {
+        const message = history.messages.find(m => m.id === messageId);
+        if (message) {
+          message.image = image; // Store the image URL
+        }
+      }
+    },
+
     setActiveHistory: (state, action: PayloadAction<string>) => {
       state.activeHistoryId = action.payload;
     },
@@ -75,7 +85,7 @@ const chatSlice = createSlice({
   },
 });
 
-export const { addMessage,updateContent, setLoading,  setActiveHistory, clearMessages  } = chatSlice.actions;
+export const { addMessage,updateContent, setLoading,  setActiveHistory, clearMessages, addImage } = chatSlice.actions;
 
 export default chatSlice.reducer;
 

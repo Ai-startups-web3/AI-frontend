@@ -7,7 +7,6 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
   const storedAccessToken = Cookies.get('access');
   const endpoint = ApiEndpoint[endpointId];
   console.log(headers);
-  
 
   if (!endpoint) {
     throw new Error(`Invalid API endpoint: ${endpointId}`);
@@ -56,8 +55,11 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
     
             try {
               const parsed = JSON.parse(data);
-              // Ensure yielding a full sentence instead of partial words
-              if (parsed.message) yield parsed.message;
+              if (parsed.message) {
+                yield parsed.message;
+              } else if (parsed.image) {
+                yield { image: parsed.image }; // Yield image data
+              }
             } catch (error) {
               console.error("Error parsing stream:", error);
             }
@@ -65,7 +67,6 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
         }
       }
     };
-    
   }
 
   // Use Axios for non-streaming requests

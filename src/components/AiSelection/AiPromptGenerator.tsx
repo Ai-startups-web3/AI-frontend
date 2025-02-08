@@ -35,7 +35,7 @@ const AiPromptGenerator = () => {
   };
 
   return (
-    <Box sx={{ margin: 'auto', padding: '20px', }}>
+    <Box sx={{ margin: 'auto', paddingTop:"20px" }}>
       <Paper elevation={3} sx={{ overflowY: 'auto', padding: '20px', borderRadius: '8px', height: "70vh" }}>
         <Typography variant="h5" sx={{ marginBottom: '16px', textAlign: 'center' }}>
           Chat with AI
@@ -44,13 +44,13 @@ const AiPromptGenerator = () => {
         <Box>
           <Box>
             {messages.map((message: { image?: string, role: string; content: any; }, index: Key | null | undefined) => (
-              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', margin: '8px 0', textAlign: message.role === 'user' ? 'right' : 'left' }}>
+              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', margin: '1px 0', textAlign: message.role === 'user' ? 'right' : 'left' }}>
                 {message.role === 'user' ? (
-                  <Avatar sx={{ marginLeft: 'auto', marginRight: '8px' }}>ME</Avatar>
+                  <Avatar sx={{ marginLeft: 'auto', marginRight: '8px',width:"26px",height:"30px"}}>ME</Avatar>
                 ) : (
-                  <Avatar sx={{ marginRight: '8px' }}>AI</Avatar>
+                  <Avatar sx={{ marginRight: '8px',width:"26px",height:"30px"}}>AI</Avatar>
                 )}
-                <Box sx={{ wordWrap: 'break-word', padding: '8px', borderRadius: '20px', boxShadow: message.role === 'user' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none' }}>
+                <Box sx={{ wordWrap: 'break-word', padding: '2px', borderRadius: '20px', boxShadow: message.role === 'user' ? '0 1px 3px rgba(0,0,0,0.2)' : 'none' }}>
                   <MarkdownBlock code={message.content} />
                   {message.image &&
                     <>

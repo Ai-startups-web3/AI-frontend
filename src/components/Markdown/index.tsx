@@ -20,7 +20,7 @@ export const MarkdownBlock: FC<Props> = ({ code }) => {
   return (
     <Box
       sx={{
-        p: 2,
+        p: "1px 16px",
         bgcolor: '#1A1B26',
         color: 'white',
         overflow: 'auto',

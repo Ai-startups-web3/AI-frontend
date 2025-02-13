@@ -4,16 +4,17 @@ import React from "react";
 import { useDispatch } from "react-redux";
 
 interface LogoutButtonProps {
+  userName:string
 }
 
-const LogoutButton: React.FC<LogoutButtonProps> = () => {
+const LogoutButton: React.FC<LogoutButtonProps> = ({ userName }) => {
   const dispatch = useDispatch();
   const onLogout = () => {
     (dispatch as AppDispatch)(logout());
   };
   return (
     <button onClick={onLogout} style={buttonStyle}>
-      Logout
+      Logout {userName}
     </button>
   );
 };

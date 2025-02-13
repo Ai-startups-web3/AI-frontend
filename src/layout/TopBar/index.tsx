@@ -20,7 +20,7 @@ import { ColorModeContext, getColors } from "../Theme/themes";
 import { motion } from "framer-motion";
 import "./style.css"
 import { useSelector } from "react-redux";
-import { isAuthenticated } from "../../lib/slices/auth/authSlice";
+import { isAuthenticated, selectUser } from "../../lib/slices/auth/authSlice";
 import LogoutButton from "../../components/Logout";
 // import LoginForm from "../../components/LoginForm";
 // import CustomDialog from "../../components/Dailog";
@@ -37,17 +37,20 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
   const [isOn, setIsOn] = useState(false);
   const navigate = useNavigate()
   // const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
-  const isUserAuthenticated=useSelector(isAuthenticated)
+  const isUserAuthenticated = useSelector(isAuthenticated)
+  const user = useSelector(selectUser)
   if (!colorMode) {
     // Handle the case where colorMode is undefined (e.g., context not yet initialized)
     return null; // or render a loading state or default content
   }
+  let userName = decodeURIComponent(user);
+  // Remove surrounding double quotes if they exist
+  userName = userName.replace(/^"|"$/g, '');
 
   const toggleSwitch = () => {
     colorMode.toggleColorMode()
     setIsOn(!isOn);
   }
-
 
   return (
     <AppBar sx={{
@@ -86,14 +89,15 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
             sm: 1,
           }}
         >
-            <div>
+          <div>
             {isUserAuthenticated ? (
+              <>
+                <LogoutButton userName={userName} />
+              </>
 
-                <LogoutButton/>
-             
-              ):(
+            ) : (
 
-              <FireBaseLogin/>
+              <FireBaseLogin />
               //   <CustomDialog
               //   className="ml-2"
               //   open={isDialogOpen}
@@ -107,7 +111,7 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
               //     OnFormSuccess={() => setDialogOpen(!isDialogOpen)}
               //     />
               // </CustomDialog>
-              )}
+            )}
           </div>
           <div className="switch" data-ison={isOn} onClick={toggleSwitch} style={{
             background: theme.palette.grey[900],

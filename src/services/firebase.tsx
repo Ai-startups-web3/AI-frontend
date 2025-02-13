@@ -5,7 +5,7 @@ import { firebaseConfig } from "../config";
 
 console.log(firebaseConfig);
 
-const app = initializeApp(firebaseConfig);
+ initializeApp(firebaseConfig);
 const auth = getAuth();
 const provider = new GoogleAuthProvider();
 

@@ -27,3 +27,7 @@ export interface ApiError {
   statusCode?: number;
   error: string;
 }
+export interface PaymentState {
+  isPaid?: boolean;
+  isLoading: boolean;
+}

@@ -2,12 +2,14 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import logger from 'redux-logger'
 import authReducer from "./slices/auth/authSlice"
 import chatReducer from "./slices/Ai/AiSlice"
+import paymentReducer from "./slices/payment/paymentSlice"
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
         auth:authReducer,
         aiChat: chatReducer,
+        payment: paymentReducer,
     }, 
       middleware:getDefaultMiddlerware =>
       getDefaultMiddlerware().concat(logger),

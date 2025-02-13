@@ -1,10 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { RequestOptions } from '../Datatypes/interface';
 import { ApiEndpoint } from '../Datatypes/enums';
-import Cookies from 'js-cookie';
 
 const Request = async ({ endpointId, slug, data, headers, params, isStream = false }: RequestOptions) => {
-  const storedAccessToken = Cookies.get('access');
+  const storedAccessToken =await getAccessToken()
+  console.log("storedAccessToken",storedAccessToken);
+  
   const endpoint = ApiEndpoint[endpointId];
   console.log(headers);
 
@@ -92,6 +93,30 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
     console.error("Request error:", error);
     throw error;
   }
+};
+
+
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
+const auth = getAuth();
+
+// Function to get the access token
+export const getAccessToken = async (): Promise<string | null> => {
+  return new Promise((resolve, reject) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          // Get the Firebase ID token
+          const token = await user.getIdToken();
+          resolve(token); // Return the token if user is authenticated
+        } catch (error) {
+          reject('Error getting token');
+        }
+      } else {
+        reject('User is not authenticated');
+      }
+    });
+  });
 };
 
 

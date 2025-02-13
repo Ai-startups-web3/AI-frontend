@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../lib/store";
 import { v4 as uuidv4 } from "uuid";
 import { fetchChatResponse } from "../../lib/slices/Ai/AiApiSlice";
 import { checkPaymentStatus, initiatePayment } from "../../lib/slices/payment/paymentApiSlice";
+import { isAuthenticated } from "../../lib/slices/auth/authSlice";
 
+
+const RAZORPAY_KEY_ID= import.meta.env.VITE_RAZORPAY_KEY_ID
 const PaymentCheckButton = ({
   input,
   selectedAI,
@@ -20,6 +23,9 @@ const PaymentCheckButton = ({
   setInput: (message: string) => void;
 }) => {
   const [isPaid, setIsPaid] = useState(false);
+  const [amount, ] = useState(500);
+  const isUserAuthenticated = useSelector(isAuthenticated)
+
   const dispatch = useDispatch<AppDispatch>();
 
   // Check payment status when component mounts
@@ -34,7 +40,7 @@ const PaymentCheckButton = ({
     };
 
     checkPayment();
-  }, [dispatch]);
+  }, [dispatch, isPaid, isUserAuthenticated]);
 
   const handleSendMessage = () => {
     if (!input.trim()) {
@@ -53,15 +59,26 @@ const PaymentCheckButton = ({
     setInput("");
   };
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => {
+      console.log("Razorpay script loaded!");
+    };
+    document.body.appendChild(script);
+  }, []);
+  
   const handleBuyNow = async () => {
     try {
       // Dispatch initiate payment action
-      const resultAction = await dispatch(initiatePayment());
+      const resultAction = await dispatch(initiatePayment({amount}));
+      
       if (initiatePayment.fulfilled.match(resultAction)) {
         const { orderId } = resultAction.payload;
 
         const options = {
-          key: "YOUR_RAZORPAY_KEY_ID",
+          key: RAZORPAY_KEY_ID,
           amount: 500 * 100, // Set the price in INR
           currency: "INR",
           name: "AI Chat Access",

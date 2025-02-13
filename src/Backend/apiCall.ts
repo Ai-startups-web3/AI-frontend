@@ -1,14 +1,19 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { RequestOptions } from '../Datatypes/interface';
+import { ApiError, RequestOptions } from '../Datatypes/interface';
 import { ApiEndpoint } from '../Datatypes/enums';
 
 const Request = async ({ endpointId, slug, data, headers, params, isStream = false }: RequestOptions) => {
-  const storedAccessToken =await getAccessToken()
+  // const storedAccessToken = Cookies.get('accessToken');
+  const storedAccessToken =await getAccessToken();
+
   const endpoint = ApiEndpoint[endpointId];
   console.log(headers);
 
+    if (endpoint.withAuth && !storedAccessToken) {
+      throw { statusCode: 700, error: "Not Authorized" } as ApiError;
+    }
   if (!endpoint) {
-    throw new Error(`Invalid API endpoint: ${endpointId}`);
+    throw { statusCode: 700, error: `Invalid API endpoint: ${endpointId}` } as ApiError;
   }
 
   let fullUrl = endpoint.url;
@@ -28,7 +33,8 @@ const Request = async ({ endpointId, slug, data, headers, params, isStream = fal
       body: endpoint.method !== 'GET' ? JSON.stringify(data) : undefined
     });
 
-    if (!response.body) throw new Error("No response body");
+    if (!response.body) throw { statusCode: 700, error: `No response body` } as ApiError;
+
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -108,10 +114,10 @@ export const getAccessToken = async (): Promise<string | null> => {
           const token = await user.getIdToken();
           resolve(token); // Return the token if user is authenticated
         } catch (error) {
-          reject('Error getting token');
+          reject({ statusCode: 500, error: "Error getting token" } as ApiError);
         }
       } else {
-        reject('User is not authenticated');
+        reject({ statusCode: 401, error: "User is not authenticated" } as ApiError);
       }
     });
   });

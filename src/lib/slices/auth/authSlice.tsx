@@ -2,6 +2,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AuthState } from '../../../Datatypes/interface';
 import Cookies from 'js-cookie';
+import { signOutUser } from '../../../services/firebase';
 
 const storedUser = Cookies.get('user');
 const storedAccessToken = Cookies.get('accessToken');
@@ -23,8 +24,6 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action: PayloadAction<{ user: any; token: { accessToken: any, refreshToken: any }; userType: string;isLoading:boolean }>) => {
 
-      console.log(action.payload.token.accessToken);
-      
       state.isAuthenticated = true;
       state.user = action.payload.user;
       state.accessToken = action.payload.token.accessToken;
@@ -40,6 +39,8 @@ const authSlice = createSlice({
       state.isLoading = action.payload.isLoading;
     },
     logout: (state) => {
+      signOutUser() 
+      
       state.isAuthenticated = false;
       state.user = null;
       state.accessToken = null;

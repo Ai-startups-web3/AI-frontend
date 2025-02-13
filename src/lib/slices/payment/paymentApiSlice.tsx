@@ -22,14 +22,15 @@ export const checkPaymentStatus = createAsyncThunk(
 
 export const initiatePayment = createAsyncThunk(
   'payment/initiateCheckout',
-  async (_, { rejectWithValue, dispatch }) => {
+  async ({amount}:{amount:number}, { rejectWithValue, dispatch }) => {
     try {
       dispatch(setPaymentLoading({ isLoading: true }));
       const response = await Request({
         endpointId: 'INITIATE_PAYMENT',
-        data: { amount: 500, currency: 'INR' },
+        data: { amount: amount, currency: 'INR' },
       });
       dispatch(setPaymentLoading({ isLoading: false }));
+      
       return response;
     } catch (error) {
       dispatch(setPaymentLoading({ isLoading: false }));

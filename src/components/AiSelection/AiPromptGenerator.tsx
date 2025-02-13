@@ -1,5 +1,5 @@
 import { Key, useState } from "react";
-import { TextField, Box, Paper, InputAdornment, Alert, Typography, Avatar } from "@mui/material";
+import { Box, Paper, Alert, Typography, Avatar } from "@mui/material";
 import { useSelector } from "react-redux";
 import { selectChatMessages, selectLoading, selectActiveHistoryId } from "../../lib/slices/Ai/AiSlice";
 import { MarkdownBlock } from "../Markdown";
@@ -12,13 +12,6 @@ const AiPromptGenerator = ({ selectedAI }: { selectedAI: string }) => {
   const messages = useSelector(selectChatMessages);
   const activeHistoryId = useSelector(selectActiveHistoryId);
   const loading = useSelector(selectLoading);
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      return;
-    }
-  };
 
   return (
     <Box sx={{ margin: "auto", paddingTop: "20px" }}>
@@ -71,29 +64,13 @@ const AiPromptGenerator = ({ selectedAI }: { selectedAI: string }) => {
         </Box>
       </Paper>
 
-      <Box sx={{ mt: 2, display: "flex" }}>
-        <TextField
-          variant="outlined"
-          placeholder="Type your message here..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyPress={handleKeyPress}
-          fullWidth
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <PaymentCheckButton
-                  input={input}
-                  selectedAI={selectedAI}
-                  activeHistoryId={activeHistoryId}
-                  setError={setError}
-                  setInput={setInput}
-                />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
+      <PaymentCheckButton
+        input={input}
+        selectedAI={selectedAI}
+        activeHistoryId={activeHistoryId}
+        setError={setError}
+        setInput={setInput}
+      />
 
       {error && (
         <Alert severity="error" sx={{ mt: 2 }}>

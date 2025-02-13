@@ -10,6 +10,7 @@ const base_url_backend =import.meta.env.VITE_BASE_URL_BACKEND;
     //payment
     INITIATE_PAYMENT: {apiId:3,  withAuth:true,url: `${base_url_backend}/payment/checkout`, method: 'POST', headers: { 'Content-Type': 'application/json'},loadingMessage:"Logging In",successMessage:"Logged In",errorMessage:"Error While Login"},
     CHECK_PAYMENT: {apiId:4,  withAuth:true,url: `${base_url_backend}/payment/check-payment`, method: 'GET', headers: { 'Content-Type': 'application/json'},loadingMessage:"Logging In",successMessage:"Logged In",errorMessage:"Error While Login"},
+    VERIFY_PAYMENT: {apiId:4,  withAuth:true,url: `${base_url_backend}/payment/verify-payment`, method: 'POST', headers: { 'Content-Type': 'application/json'},loadingMessage:"Logging In",successMessage:"Logged In",errorMessage:"Error While Login"},
 
 };
 

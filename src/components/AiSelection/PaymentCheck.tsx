@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../lib/store";
 import { v4 as uuidv4 } from "uuid";
 import { fetchChatResponse } from "../../lib/slices/Ai/AiApiSlice";
-import { checkPaymentStatus, initiatePayment } from "../../lib/slices/payment/paymentApiSlice";
+import { checkPaymentStatus, initiatePayment, verifyPayment } from "../../lib/slices/payment/paymentApiSlice";
 import { isAuthenticated, setCredentials } from "../../lib/slices/auth/authSlice";
 import { signInWithGoogle } from "../../services/firebase";
 
@@ -95,28 +95,30 @@ const PaymentCheckButton = ({
 
   const handleBuyNow = async () => {
     try {
-      // Dispatch initiate payment action
       const resultAction = await dispatch(initiatePayment({ amount }));
-
+  
       if (initiatePayment.fulfilled.match(resultAction)) {
         const { orderId } = resultAction.payload;
-
+  
         const options = {
           key: RAZORPAY_KEY_ID,
-          amount: 500 * 100, // Set the price in INR
+          amount: amount * 100, 
           currency: "INR",
           name: "AI Chat Access",
           description: "Unlock premium AI chat access",
           order_id: orderId,
-          handler: async function () {
-            alert("Payment Successful!");
-            setIsPaid(true);
+          handler: async function (response: any) {
+            // Send payment details to the backend
+            dispatch(verifyPayment({
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_signature: response.razorpay_signature,
+              setIsPaid
+            }))
           },
-          theme: {
-            color: "#3399cc",
-          },
+          theme: { color: "#3399cc" },
         };
-
+  
         const razorpay = new (window as any).Razorpay(options);
         razorpay.open();
       }
@@ -124,6 +126,7 @@ const PaymentCheckButton = ({
       console.error("Razorpay Checkout Error:", error);
     }
   };
+  
 
   if (!isUserAuthenticated) {
     return (

@@ -39,3 +39,29 @@ export const initiatePayment = createAsyncThunk(
     }
   }
 );
+
+export const verifyPayment = createAsyncThunk(
+  'payment/verifyPayment',
+  async ({razorpay_payment_id, razorpay_signature, razorpay_order_id, setIsPaid}:{razorpay_payment_id:string,razorpay_signature:String, razorpay_order_id:string, setIsPaid:any}, { rejectWithValue, dispatch }) => {
+    try {
+      dispatch(setPaymentLoading({ isLoading: true }));
+      const response = await Request({
+        endpointId: 'VERIFY_PAYMENT',
+        data: { razorpay_payment_id,razorpay_signature, razorpay_order_id },
+      });
+      dispatch(setPaymentLoading({ isLoading: false }));
+
+      if (response) {
+        setIsPaid(true);
+      } else {
+        alert("Payment Verification Failed!");
+      }
+
+      return response;
+    } catch (error) {
+      dispatch(setPaymentLoading({ isLoading: false }));
+      const castedError = error as ApiError;
+      return rejectWithValue(castedError?.error || 'Unknown Error');
+    }
+  }
+);

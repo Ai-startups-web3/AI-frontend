@@ -5,7 +5,7 @@ import NewChatButton from '../../components/AiSelection/NewChat'
 import AISelectionForm from '../../components/AiSelection/AISelectionForm';
 
 function HomePage() {
-  const [selectedAI, setSelectedAI] = useState('Deepseek');
+  const [selectedAI, setSelectedAI] = useState('Gemini');
 
   return (
     <>

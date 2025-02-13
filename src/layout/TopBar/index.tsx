@@ -22,8 +22,9 @@ import "./style.css"
 import { useSelector } from "react-redux";
 import { isAuthenticated } from "../../lib/slices/auth/authSlice";
 import LogoutButton from "../../components/Logout";
-import LoginForm from "../../components/LoginForm";
-import CustomDialog from "../../components/Dailog";
+// import LoginForm from "../../components/LoginForm";
+// import CustomDialog from "../../components/Dailog";
+import FireBaseLogin from "../../components/LoginForm/FireBaseLogin";
 
 interface HeaderProps {
   setIsSidebarOpen: () => void;
@@ -35,7 +36,7 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
   const theme = useTheme()
   const [isOn, setIsOn] = useState(false);
   const navigate = useNavigate()
-  const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
+  // const [isDialogOpen, setDialogOpen] = useState<boolean>(false);
   const isUserAuthenticated=useSelector(isAuthenticated)
   if (!colorMode) {
     // Handle the case where colorMode is undefined (e.g., context not yet initialized)
@@ -91,19 +92,21 @@ const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen, APP_BAR }) => {
                 <LogoutButton/>
              
               ):(
-                <CustomDialog
-                className="ml-2"
-                open={isDialogOpen}
-                onClose={() => setDialogOpen(!isDialogOpen)}
-                triggerButtonText={"Login"}
-                title={""}
-                description={"Only admin are availabale to login for now"}
-                >
-                <LoginForm
-                  loginTitle="Admin Login"
-                  OnFormSuccess={() => setDialogOpen(!isDialogOpen)}
-                  />
-              </CustomDialog>
+
+              <FireBaseLogin/>
+              //   <CustomDialog
+              //   className="ml-2"
+              //   open={isDialogOpen}
+              //   onClose={() => setDialogOpen(!isDialogOpen)}
+              //   triggerButtonText={"Login"}
+              //   title={""}
+              //   description={"Only admin are availabale to login for now"}
+              //   >
+              //   <LoginForm
+              //     loginTitle="Admin Login"
+              //     OnFormSuccess={() => setDialogOpen(!isDialogOpen)}
+              //     />
+              // </CustomDialog>
               )}
           </div>
           <div className="switch" data-ison={isOn} onClick={toggleSwitch} style={{

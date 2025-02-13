@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { MarkdownBlock } from '../Markdown';
 import { AppDispatch } from '../../lib/store';
 
-const AiPromptGenerator = () => {
+const AiPromptGenerator = ({ selectedAI }: { selectedAI: string }) => {
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
 
@@ -22,7 +22,7 @@ const AiPromptGenerator = () => {
       return;
     }
     setError('');
-    dispatch(fetchChatResponse({ newMessageId: uuidv4(), userMessage: input, aiType: 'Deepseek', historyId: activeHistoryId || "" }));
+    dispatch(fetchChatResponse({ newMessageId: uuidv4(), userMessage: input, aiType: selectedAI, historyId: activeHistoryId || "" }));
     setInput('');
 
   };

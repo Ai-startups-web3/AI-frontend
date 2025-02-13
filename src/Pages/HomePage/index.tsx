@@ -21,7 +21,7 @@ function HomePage() {
       <AISelectionForm selectedAI={selectedAI} setSelectedAI={setSelectedAI} />
       </Box>
 
-      <AiPromptGenerator />
+      <AiPromptGenerator selectedAI={selectedAI} />
     </>
   )
 }

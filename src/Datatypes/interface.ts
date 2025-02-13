@@ -11,8 +11,8 @@ export interface RequestOptions {
 export interface AuthState {
   isAuthenticated: boolean;
   user: any | null;
-  access: string | null;
-  refresh: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   userType: string | null;
   isLoading:boolean
 }

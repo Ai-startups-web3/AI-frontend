@@ -4,8 +4,6 @@ import { ApiEndpoint } from '../Datatypes/enums';
 
 const Request = async ({ endpointId, slug, data, headers, params, isStream = false }: RequestOptions) => {
   const storedAccessToken =await getAccessToken()
-  console.log("storedAccessToken",storedAccessToken);
-  
   const endpoint = ApiEndpoint[endpointId];
   console.log(headers);
 

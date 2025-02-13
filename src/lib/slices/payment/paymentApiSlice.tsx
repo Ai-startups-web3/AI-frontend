@@ -10,8 +10,8 @@ export const checkPaymentStatus = createAsyncThunk(
     try {
       dispatch(setPaymentLoading({ isLoading: true }));
       const response = await Request({ endpointId: 'CHECK_PAYMENT' });
-      dispatch(setPaymentStatus({ isPaid: response.data.isPaidUser }));
-      return response.data.isPaidUser;
+      dispatch(setPaymentStatus({ isPaid: response.isPaidUser }));
+      return response.isPaidUser;
     } catch (error) {
       dispatch(setPaymentLoading({ isLoading: false }));
       const castedError = error as ApiError;
@@ -30,7 +30,7 @@ export const initiatePayment = createAsyncThunk(
         data: { amount: 500, currency: 'INR' },
       });
       dispatch(setPaymentLoading({ isLoading: false }));
-      return response.data;
+      return response;
     } catch (error) {
       dispatch(setPaymentLoading({ isLoading: false }));
       const castedError = error as ApiError;

@@ -149,7 +149,6 @@ const AiPromptGenerator = ({ selectedAI }: { selectedAI: string }) => {
                   currentTime={currentTime}
                   duration={duration}
                   isPlaying={isPlaying}
-                  isStreaming={isStreaming}
                   togglePlayPause={togglePlayPause}
                   stopAudio={stopAudio}
                   seekAudio={seekAudio}

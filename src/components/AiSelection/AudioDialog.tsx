@@ -13,7 +13,6 @@ const AudioDialog = ({
   currentTime: number;
   duration: number;
   isPlaying: boolean;
-  isStreaming: boolean;
   togglePlayPause: () => void;
   stopAudio: () => void;
   seekAudio: (time: number) => void;

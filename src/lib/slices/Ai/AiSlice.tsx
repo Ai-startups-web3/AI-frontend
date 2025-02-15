@@ -1,12 +1,14 @@
+// aiSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v4 as uuidv4 } from 'uuid';  // Import UUID library
+import { v4 as uuidv4 } from 'uuid';
 
 export interface ChatMessage {
   id: string;
-  role: string; 
-  // 'user' or 'assistant'
+  role: string; // 'user' or 'assistant'
   content: string;
-  image?:string
+  image?: string;
+  audioUrl?: string; // Add audio URL to the message
+  isAudioLoading?: boolean;
 }
 
 export interface ChatHistory {
@@ -18,19 +20,23 @@ export interface ChatState {
   histories: ChatHistory[];
   loading: boolean;
   activeHistoryId: string | null;
+  currentlyPlayingAudio: string | null; // Track currently playing audio
+  isStreaming: boolean;
 }
 
-const initialChatId=uuidv4()
+const initialChatId = uuidv4();
 
 const initialState: ChatState = {
   histories: [
     {
       historyId: initialChatId,
-      messages: [{id: uuidv4(), role: 'assistant', content: 'Welcome to your new chat session!' }],
+      messages: [{ id: uuidv4(), role: 'assistant', content: 'Welcome to your new chat session!' }],
     },
   ],
   activeHistoryId: initialChatId,
   loading: false,
+  currentlyPlayingAudio: null,
+  isStreaming: false,
 };
 
 const chatSlice = createSlice({
@@ -46,30 +52,33 @@ const chatSlice = createSlice({
       }
       history.messages.push(message);
     },
-
-    updateContent: (state, action: PayloadAction<{ historyId: string; messageId: string; newContent: string }>) => {
-      const { historyId, messageId, newContent } = action.payload;
-      
+    updateContent: (state, action: PayloadAction<{ historyId: string; messageId: string; newContent: string; audioUrl?: string; isAudioLoading?: boolean }>) => {
+      const { historyId, messageId, newContent, audioUrl, isAudioLoading } = action.payload;
       const history = state.histories.find(h => h.historyId === historyId);
       if (history) {
         const message = history.messages.find(m => m.id === messageId);
         if (message) {
           message.content = newContent;
+          if (audioUrl !== undefined) {
+            message.audioUrl = audioUrl;
+          }
+          if (isAudioLoading !== undefined) {
+            message.isAudioLoading = isAudioLoading;
+          }
         }
       }
+      state.currentlyPlayingAudio=messageId
     },
-
     addImage: (state, action: PayloadAction<{ historyId: string; messageId: string; image: string }>) => {
       const { historyId, messageId, image } = action.payload;
       const history = state.histories.find(h => h.historyId === historyId);
       if (history) {
         const message = history.messages.find(m => m.id === messageId);
         if (message) {
-          message.image = image; // Store the image URL
+          message.image = image;
         }
       }
     },
-
     setActiveHistory: (state, action: PayloadAction<string>) => {
       state.activeHistoryId = action.payload;
     },
@@ -82,14 +91,21 @@ const chatSlice = createSlice({
         history.messages = [];
       }
     },
+    setCurrentlyPlayingAudio: (state, action: PayloadAction<string | null>) => {
+      state.currentlyPlayingAudio = action.payload;
+      
+    },
+    setIsStreaming: (state, action: PayloadAction<boolean>) => {
+      state.isStreaming = action.payload;
+    },
   },
 });
 
-export const { addMessage,updateContent, setLoading,  setActiveHistory, clearMessages, addImage } = chatSlice.actions;
+export const { addMessage, updateContent, setLoading, setActiveHistory, clearMessages, addImage, setCurrentlyPlayingAudio, setIsStreaming } = chatSlice.actions;
 
 export default chatSlice.reducer;
 
-// Selector to get messages
+// Selectors
 export const selectChatHistories = (state: { aiChat: ChatState }) => state.aiChat.histories;
 export const selectActiveHistoryId = (state: { aiChat: ChatState }) => state.aiChat.activeHistoryId;
 export const selectChatMessages = (state: { aiChat: ChatState }) => {
@@ -97,3 +113,5 @@ export const selectChatMessages = (state: { aiChat: ChatState }) => {
   return activeHistory ? activeHistory.messages : [];
 };
 export const selectLoading = (state: { aiChat: ChatState }) => state.aiChat.loading;
+export const selectCurrentlyPlayingAudio = (state: { aiChat: ChatState }) => state.aiChat.currentlyPlayingAudio;
+export const selectIsStreaming = (state: { aiChat: ChatState }) => state.aiChat.isStreaming;

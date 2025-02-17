@@ -1,19 +1,24 @@
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { selectChatMessages } from "../../../lib/slices/Ai/AiSlice";
+import { selectChatMessages, selectLoading } from "../../../lib/slices/Ai/AiSlice";
 import MessageItem from "./SingleItem/AudioMessageItem"; 
 // Import the new MessageItem component
 
-const VideoTab = () => {
+const VideoAi = () => {
   const messages = useSelector(selectChatMessages);
+  const isLoading=useSelector(selectLoading)
 
   return (
     <Box>
       {messages.map((message, index) => (
         <MessageItem key={index} message={message} />
       ))}
+        {isLoading && <Box>
+              Analysing Your Audio
+            </Box>
+            }
     </Box>
   );
 };
 
-export default VideoTab;
+export default VideoAi;

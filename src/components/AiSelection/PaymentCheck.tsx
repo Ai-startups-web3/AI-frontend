@@ -8,35 +8,25 @@ import { checkPaymentStatus } from "../../lib/slices/payment/paymentApiSlice";
 import { isAuthenticated } from "../../lib/slices/auth/authSlice";
 import { PromptType } from "../../Datatypes/enums";
 import BuyNowButton from "../Payment/BuyNowButton";
-import InputModeToggle from "../InputToggle";
-import TextInput from "./TextInput";
 import FireBaseLogin from "../LoginForm/FireBaseLogin";
 import AudioRecorder from "../AudioRecorder";
+import { selectActiveHistoryId } from "../../lib/slices/Ai/AiSlice";
 
 const PaymentCheckButton = ({
-  input,
   selectedAI,
-  activeHistoryId,
   setError,
-  setInput,
   promptType
 }: {
-  input: string;
   selectedAI: string;
-  activeHistoryId: string | null;
   setError: (message: string) => void;
-  setInput: (message: string) => void;
   promptType: PromptType
 }) => {
   const [isPaid, setIsPaid] = useState(false);
   const [amount] = useState(500);
   const isUserAuthenticated = useSelector(isAuthenticated);
-  const [isAudioMode, setIsAudioMode] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const activeHistoryId = useSelector(selectActiveHistoryId);
 
-  const toggleInputMode = () => {
-    setIsAudioMode(!isAudioMode);
-  };
 
   // Check payment status when component mounts
   useEffect(() => {
@@ -52,22 +42,22 @@ const PaymentCheckButton = ({
     checkPayment();
   }, [dispatch, isPaid, isUserAuthenticated]);
 
-  const handleSendMessage = () => {
-    if (!input.trim()) {
+  const handleSendMessage = (audioUrl:string) => {
+    if (!audioUrl) {
       setError("Please enter some input.");
       return;
     }
+    // convert audio to text
     setError("");
     dispatch(
       fetchChatResponse({
         newMessageId: uuidv4(),
-        userMessage: input,
+        userMessage: audioUrl,
         aiType: selectedAI,
         historyId: activeHistoryId || "",
         promptType: promptType
       })
     );
-    setInput("");
   };
 
   useEffect(() => {
@@ -86,18 +76,13 @@ const PaymentCheckButton = ({
 
   return isPaid ? (
     <Box sx={{ mt: 2 }}>
-      <InputModeToggle isAudioMode={isAudioMode} toggleInputMode={toggleInputMode} />
       <Box sx={{
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center"
       }}>
-        {isAudioMode ? (
-          <AudioRecorder />
-        ) : (
-          <TextInput input={input} setInput={setInput} handleSendMessage={handleSendMessage} />
-        )}
+          <AudioRecorder onStopRecording={handleSendMessage} />
       </Box>
     </Box>
   ) : (

@@ -1,4 +1,4 @@
-import { Box, Avatar, IconButton, Typography, CircularProgress } from "@mui/material";
+import { Box, Avatar, IconButton, Typography } from "@mui/material";
 import { MarkdownBlock } from "../../../Markdown";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { useSelector, useDispatch } from "react-redux";

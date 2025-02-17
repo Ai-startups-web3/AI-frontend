@@ -24,7 +24,7 @@ const AudioDialog = ({
   isPlaying,
   audioRef,
   setCurrentTime,
-  setIsPlaying,
+  // setIsPlaying,
   handlePlayAudio,
 }: AudioDialogProps) => {
   const sliderRef = useRef<HTMLInputElement>(null);
@@ -48,6 +48,8 @@ const AudioDialog = ({
       const seekTime = Array.isArray(newValue) ? newValue[0] : newValue;
       audioRef.current.currentTime = seekTime;
       setCurrentTime(seekTime);
+      console.log(event);
+      
     }
   };
 

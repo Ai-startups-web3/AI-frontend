@@ -1,4 +1,4 @@
-import { Box, Button, TextField, InputAdornment } from "@mui/material";
+import {  Button, TextField, InputAdornment } from "@mui/material";
 
 const TextInput = ({ input, setInput, handleSendMessage }: { input: string; setInput: (message: string) => void; handleSendMessage: () => void }) => {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLDivElement>) => {

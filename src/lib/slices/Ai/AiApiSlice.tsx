@@ -35,10 +35,9 @@ export const fetchChatResponse = createAsyncThunk(
       dispatch(
         addMessage({
           historyId: currentHistoryId,
-          message: { id: newMessageIdAssistant, role: "assistant", content: "", isAudioLoading: promptType === "AUDIO" },
+          message: { id: newMessageIdAssistant, role: "assistant", content: "", isAudioLoading:true },
         })
       );
-
 
       if (response.contentType === "audio/mpeg") {
         // Handle audio streaming

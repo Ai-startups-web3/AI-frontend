@@ -11,6 +11,7 @@ import BuyNowButton from "../Payment/BuyNowButton";
 import FireBaseLogin from "../LoginForm/FireBaseLogin";
 import AudioRecorder from "../AudioRecorder";
 import { selectActiveHistoryId } from "../../lib/slices/Ai/AiSlice";
+const openAiApiKey=import.meta.env.VITE_OPENAI_KEY
 
 const PaymentCheckButton = ({
   selectedAI,
@@ -42,17 +43,41 @@ const PaymentCheckButton = ({
     checkPayment();
   }, [dispatch, isPaid, isUserAuthenticated]);
 
-  const handleSendMessage = (audioUrl:string) => {
+  const handleSendMessage = async(audioUrl:string,file:File) => {
     if (!audioUrl) {
       setError("Please enter some input.");
       return;
     }
+        // Create form data for the audio file
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("model", "whisper-1");
+    
+        // Fetch request to Whisper API (replace with actual endpoint)
+        const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${openAiApiKey}`, // Replace with your actual API key
+          },
+          body: formData,
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to transcribe audio");
+        }
+    
+        // Parse the response from the Whisper API
+        const data = await response.json();
+        const transcribedText = data.text; // The transcribed text from the Whisper API
+    
+        console.log("transcribedText",transcribedText);
+        
     // convert audio to text
     setError("");
     dispatch(
       fetchChatResponse({
         newMessageId: uuidv4(),
-        userMessage: audioUrl,
+        userMessage: transcribedText,
         audioUrl:audioUrl,
         aiType: selectedAI,
         historyId: activeHistoryId || "",

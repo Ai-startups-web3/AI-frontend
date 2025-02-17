@@ -4,7 +4,7 @@ import { useReactMediaRecorder } from "react-media-recorder";
 
 interface AudioInputProps {
   onStartRecording?: () => void;
-  onStopRecording?: (blobUrl: string) => void;
+  onStopRecording?: (mediaBlobUrl: string,file:File) => void;
   onPauseRecording?: () => void;
   onResumeRecording?: () => void;
   onError?: (error: string) => void;
@@ -46,9 +46,21 @@ const AudioRecorder = ({
 
   useEffect(() => {
     if (status === "stopped" && mediaBlobUrl && onStopRecording) {
-      onStopRecording(mediaBlobUrl);
+      // Convert Blob to File
+      fetch(mediaBlobUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const file = new File([blob], 'audio-recording.webm', { type: blob.type });
+          onStopRecording(mediaBlobUrl,file);
+        })
+        .catch(error => {
+          if (onError) {
+            onError(error.message);
+          }
+        });
     }
   }, [status, mediaBlobUrl, onStopRecording]);
+  
 
   useEffect(() => {
     if (status === "paused" && onPauseRecording) {

@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';  // Import UUID library
 
 export const fetchChatResponse = createAsyncThunk(
   'chat/fetchResponse',
-  async ({ newMessageId, userMessage, aiType, historyId, promptType }: { newMessageId: string, userMessage: string, aiType: string, historyId: string, promptType: string }, { dispatch, getState }) => {
+  async ({ newMessageId,audioUrl, userMessage, aiType, historyId, promptType }: { newMessageId: string, userMessage: string, aiType: string, historyId: string, promptType: string,audioUrl?:string }, { dispatch, getState }) => {
     dispatch(setLoading(true));
     const newMessageIdAssistant = uuidv4();
 
@@ -16,15 +16,8 @@ export const fetchChatResponse = createAsyncThunk(
       currentHistoryId = uuidv4();
       dispatch(setActiveHistory(currentHistoryId));
     }
-    dispatch(
-      updateContent({
-        historyId: currentHistoryId,
-        messageId: newMessageIdAssistant,
-        newContent: "Audio response",
-        isAudioLoading: true,
-      })
-    );
-    const userNewMessage: ChatMessage = { id: newMessageId, role: 'user', content: userMessage,isAudioLoading:false };
+   
+    const userNewMessage: ChatMessage = { id: newMessageId, role: 'user', content: userMessage,isAudioLoading:false,audioUrl };
     dispatch(addMessage({ historyId: currentHistoryId, message: userNewMessage }));
 
     // Get the entire chat history (messages) for the currentHistoryId

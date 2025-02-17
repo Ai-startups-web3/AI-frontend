@@ -53,6 +53,7 @@ const PaymentCheckButton = ({
       fetchChatResponse({
         newMessageId: uuidv4(),
         userMessage: audioUrl,
+        audioUrl:audioUrl,
         aiType: selectedAI,
         historyId: activeHistoryId || "",
         promptType: promptType

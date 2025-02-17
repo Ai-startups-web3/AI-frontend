@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Box } from '@mui/material'
-import AiPromptGenerator from '../../components/AiSelection/AiPromptGenerator';
+import AiPromptGenerator from '../../components/AiSelection';
 import NewChatButton from '../../components/AiSelection/NewChat'
 import AISelectionForm from '../../components/AiSelection/AISelectionForm';
 

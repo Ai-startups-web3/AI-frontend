@@ -1,4 +1,4 @@
-import { Box, Avatar, IconButton, Typography, CircularProgress } from "@mui/material";
+import { Box, Avatar, IconButton, Typography } from "@mui/material";
 import { MarkdownBlock } from "../../../Markdown";
 import VolumeUpIcon from "@mui/icons-material/VolumeUp";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,7 +9,7 @@ import {
 } from "../../../../lib/slices/Ai/AiSlice"; // Adjust import path
 import { ChatMessage } from "../../../../lib/slices/Ai/AiSlice";
 import { useEffect, useRef, useState } from "react";
-import AudioDialog from "./AudioDialog"; // Import the AudioDialog component
+import VideoDailog from "./VideoDailog.tsx";
 
 interface MessageItemProps {
   message: ChatMessage;
@@ -117,7 +117,7 @@ const AudioMessageItem = ({ message }: MessageItemProps) => {
                 <VolumeUpIcon color={currentlyPlayingAudio === message.id ? "primary" : "inherit"} />
               </IconButton>
             }
-              <AudioDialog
+              <VideoDailog
                 messageId={message.id}
                 audioUrl={message.audioUrl}
                 isAudioLoading={isAudioLoading}

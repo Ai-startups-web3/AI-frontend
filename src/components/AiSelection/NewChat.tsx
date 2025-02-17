@@ -9,7 +9,7 @@ const NewChatButton = () => {
 
   const handleNewChat = () => {
     const newHistoryId = uuidv4();
-    dispatch(addMessage({ historyId: newHistoryId, message: { id: uuidv4(), role: 'assistant', content: 'New chat started!' } }));
+    dispatch(addMessage({ historyId: newHistoryId, message: { id: uuidv4(), role: 'assistant', content: 'New chat started!',isAudioLoading:true } }));
     dispatch(setActiveHistory(newHistoryId));
   };
 

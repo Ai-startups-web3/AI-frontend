@@ -6,6 +6,7 @@ import TextTab from "./ReplyTab/TextTab";
 import AudioTab from "./ReplyTab/AudioTab";
 import PaymentCheckButton from "./PaymentCheck";
 import { PromptType } from "../../Datatypes/enums";
+import VideoTab from "./ReplyTab/VideoTab";
 
 const AiPromptGenerator = ({ selectedAI }: { selectedAI: string }) => {
   const [input, setInput] = useState("");
@@ -27,12 +28,14 @@ const AiPromptGenerator = ({ selectedAI }: { selectedAI: string }) => {
           <Tab label={PromptType.AUDIO} value={PromptType.AUDIO} />
           <Tab label={PromptType.VIDEO} value={PromptType.VIDEO} />
           <Tab label={PromptType.LINKEDIN_PROFILE} value={PromptType.LINKEDIN_PROFILE} />
+          <Tab label={PromptType.LINKEDIN_POST} value={PromptType.LINKEDIN_POST} />
         </Tabs>
 
         {tabValue === PromptType.TEXT && <TextTab messages={messages} />}
         {tabValue === PromptType.AUDIO && <AudioTab />}
-        {tabValue === PromptType.VIDEO && <AudioTab />}
-        {tabValue === PromptType.LINKEDIN_PROFILE && <AudioTab />}
+        {tabValue === PromptType.VIDEO && <VideoTab />}
+        {tabValue === PromptType.LINKEDIN_PROFILE && <TextTab messages={messages}  />}
+        {tabValue === PromptType.LINKEDIN_POST && <TextTab messages={messages}  />}
 
       </Paper>
 

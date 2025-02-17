@@ -6,10 +6,9 @@ interface MessageItemProps {
   message: ChatMessage;
 }
 
-const AudioMessageItem = ({ message }: MessageItemProps) => {
+const VideoMessageItem = ({ message }: MessageItemProps) => {
 
   return (
-    <Box>
       <Box
         sx={{
           display: "flex",
@@ -39,7 +38,7 @@ const AudioMessageItem = ({ message }: MessageItemProps) => {
           ) : (
             <AudioDialog
                 messageId={message.id}
-                audioUrl={message.content}
+                audioUrl={message.audioUrl}
               />
           )}
           
@@ -51,8 +50,7 @@ const AudioMessageItem = ({ message }: MessageItemProps) => {
           )}
         </Box>
       </Box>
-    </Box>
   );
 };
 
-export default AudioMessageItem;
+export default VideoMessageItem;

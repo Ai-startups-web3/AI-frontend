@@ -14,7 +14,7 @@ const VideoAi = () => {
         <MessageItem key={index} message={message} />
       ))}
         {isLoading && <Box>
-              Analysing Your Audio
+              Analysing Best Answers For You
             </Box>
             }
     </Box>

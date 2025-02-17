@@ -1,6 +1,6 @@
 import { Box, Avatar, Typography } from "@mui/material";
 import { ChatMessage } from "../../../../lib/slices/Ai/AiSlice";
-import AudioDialog from "./AudioDialog"; // Import the AudioDialog component
+import AudioDialog from "./VideoDialog"; // Import the AudioDialog component
 
 interface MessageItemProps {
   message: ChatMessage;

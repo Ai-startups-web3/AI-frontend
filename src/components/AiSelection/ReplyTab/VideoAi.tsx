@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { selectChatMessages, selectLoading } from "../../../lib/slices/Ai/AiSlice";
-import MessageItem from "./SingleItem/AudioMessageItem"; 
+import MessageItem from "./SingleItem/VideoMessageItem"; 
 // Import the new MessageItem component
 
 const VideoAi = () => {

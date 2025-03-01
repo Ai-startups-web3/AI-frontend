@@ -24,6 +24,8 @@ const VideoMessageItem = ({ message }: MessageItemProps) => {
         )}
         <Box
           sx={{
+            display:"flex",
+            justifyContent: message.role === "user" ? "flex-end" :"flex-start",
             wordWrap: "break-word",
             padding: "2px",
             borderRadius: "20px",

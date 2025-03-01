@@ -108,7 +108,7 @@ export const selectChatMessages = (state: { aiChat: ChatState }) => {
   const activeHistory = state.aiChat.histories.find(h => h.historyId === state.aiChat.activeHistoryId);
   return activeHistory ? activeHistory.messages : [];
 };
-export const selectLoading = (state: { aiChat: ChatState }) => state.aiChat.loading;
+export const selectLoadingAiReply = (state: { aiChat: ChatState }) => state.aiChat.loading;
 export const selectCurrentlyPlayingAudio = (state: { aiChat: ChatState }) => state.aiChat.currentlyPlayingAudio;
 
 export const selectIsAudioLoadingForMessage = (state: { aiChat: ChatState }, messageId: string) => {

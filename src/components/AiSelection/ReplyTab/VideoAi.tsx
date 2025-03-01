@@ -1,22 +1,23 @@
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
-import { selectChatMessages, selectLoading } from "../../../lib/slices/Ai/AiSlice";
-import MessageItem from "./SingleItem/VideoMessageItem"; 
+import { selectChatMessages, selectLoadingAiReply } from "../../../lib/slices/Ai/AiSlice";
+import MessageItem from "./SingleItem/VideoMessageItem";
 // Import the new MessageItem component
 
 const VideoAi = () => {
   const messages = useSelector(selectChatMessages);
-  const isLoading=useSelector(selectLoading)
+  const isLoading = useSelector(selectLoadingAiReply)
 
   return (
     <Box>
       {messages.map((message, index) => (
         <MessageItem key={index} message={message} />
       ))}
-        {isLoading && <Box>
-              Analysing Best Answers For You
-            </Box>
-            }
+      {isLoading && <Box>
+        <CircularProgress size={30} />
+        Analysing Best Answers For You
+      </Box>
+      }
     </Box>
   );
 };

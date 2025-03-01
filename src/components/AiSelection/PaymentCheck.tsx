@@ -10,7 +10,7 @@ import { PromptType } from "../../Datatypes/enums";
 import BuyNowButton from "../Payment/BuyNowButton";
 import FireBaseLogin from "../LoginForm/FireBaseLogin";
 import AudioRecorder from "../AudioRecorder";
-import { addMessage, ChatMessage, selectActiveHistoryId } from "../../lib/slices/Ai/AiSlice";
+import { addMessage, ChatMessage, selectActiveHistoryId, setLoading } from "../../lib/slices/Ai/AiSlice";
 const openAiApiKey = import.meta.env.VITE_OPENAI_KEY
 
 const PaymentCheckButton = ({
@@ -48,7 +48,7 @@ const PaymentCheckButton = ({
       setError("Please enter some input.");
       return;
     }
-
+    dispatch(setLoading(true))
     const newMessageId = uuidv4()
     const userNewMessage: ChatMessage = { id: newMessageId, role: 'user', content: "", isAudioLoading: false, audioUrl };
     dispatch(addMessage({ historyId: activeHistoryId || "", message: userNewMessage }));

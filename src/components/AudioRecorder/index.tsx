@@ -1,15 +1,15 @@
-import { Button, Box, Typography } from "@mui/material";
+import { Button, Box, Typography, Container } from "@mui/material";
 import { useEffect } from "react";
 import { useReactMediaRecorder } from "react-media-recorder";
 
 interface AudioInputProps {
-  onStartRecording?: () => void; // Callback when recording starts
-  onStopRecording?: (blobUrl: string) => void; // Callback when recording stops
-  onPauseRecording?: () => void; // Callback when recording is paused
-  onResumeRecording?: () => void; // Callback when recording resumes
-  onError?: (error: string) => void; // Callback for errors
-  showControls?: boolean; // Whether to show playback controls
-  allowReRecording?: boolean; // Whether to allow re-recording
+  onStartRecording?: () => void;
+  onStopRecording?: (mediaBlobUrl: string,file:File) => void;
+  onPauseRecording?: () => void;
+  onResumeRecording?: () => void;
+  onError?: (error: string) => void;
+  showControls?: boolean;
+  allowReRecording?: boolean;
 }
 
 const AudioRecorder = ({
@@ -18,7 +18,7 @@ const AudioRecorder = ({
   onPauseRecording,
   onResumeRecording,
   onError,
-  showControls = true,
+  // showControls = true,
   allowReRecording = true,
 }: AudioInputProps) => {
   const {
@@ -30,37 +30,44 @@ const AudioRecorder = ({
     resumeRecording,
     clearBlobUrl,
     error,
-  } = useReactMediaRecorder({ audio: true, video: false });
+  } = useReactMediaRecorder({ audio: true });
 
-  // Handle errors
   useEffect(() => {
     if (error && onError) {
       onError(error);
     }
   }, [error, onError]);
 
-  // Callback when recording starts
   useEffect(() => {
     if (status === "recording" && onStartRecording) {
       onStartRecording();
     }
   }, [status, onStartRecording]);
 
-  // Callback when recording stops
   useEffect(() => {
     if (status === "stopped" && mediaBlobUrl && onStopRecording) {
-      onStopRecording(mediaBlobUrl);
+      // Convert Blob to File
+      fetch(mediaBlobUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const file = new File([blob], 'audio-recording.webm', { type: blob.type });
+          onStopRecording(mediaBlobUrl,file);
+        })
+        .catch(error => {
+          if (onError) {
+            onError(error.message);
+          }
+        });
     }
   }, [status, mediaBlobUrl, onStopRecording]);
+  
 
-  // Callback when recording is paused
   useEffect(() => {
     if (status === "paused" && onPauseRecording) {
       onPauseRecording();
     }
   }, [status, onPauseRecording]);
 
-  // Callback when recording resumes
   useEffect(() => {
     if (status === "recording" && onResumeRecording) {
       onResumeRecording();
@@ -68,14 +75,9 @@ const AudioRecorder = ({
   }, [status, onResumeRecording]);
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      {/* Recording Status */}
-      <Typography variant="body1">
-        Status: {status}
-      </Typography>
-
-      {/* Recording Controls */}
-      <Box sx={{ display: "flex", gap: 2 }}>
+    <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <Typography variant="body1">Status: {status}</Typography>
         {status === "recording" ? (
           <>
             <Button variant="contained" onClick={pauseRecording}>
@@ -86,32 +88,21 @@ const AudioRecorder = ({
             </Button>
           </>
         ) : (
-          <Button
-            variant="contained"
-            onClick={startRecording}
-            disabled={status === "stopped" && !allowReRecording}
-          >
+          <Button variant="contained" onClick={startRecording} disabled={status === "stopped" && !allowReRecording}>
             {mediaBlobUrl ? "Record Again" : "Start Recording"}
           </Button>
         )}
-
         {status === "paused" && (
           <Button variant="contained" onClick={resumeRecording}>
             Resume
           </Button>
         )}
+        <Button variant="outlined" onClick={clearBlobUrl}>
+          Clear Recording
+        </Button>
       </Box>
-
-      {/* Audio Playback */}
-      {mediaBlobUrl && showControls && (
-        <Box sx={{ mt: 2 }}>
-          <audio src={mediaBlobUrl} controls />
-          <Button variant="outlined" onClick={clearBlobUrl} sx={{ mt: 1 }}>
-            Clear Recording
-          </Button>
-        </Box>
-      )}
-    </Box>
+   
+    </Container>
   );
 };
 

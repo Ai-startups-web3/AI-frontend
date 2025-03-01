@@ -8,35 +8,26 @@ import { checkPaymentStatus } from "../../lib/slices/payment/paymentApiSlice";
 import { isAuthenticated } from "../../lib/slices/auth/authSlice";
 import { PromptType } from "../../Datatypes/enums";
 import BuyNowButton from "../Payment/BuyNowButton";
-import InputModeToggle from "../InputToggle";
-import TextInput from "./TextInput";
 import FireBaseLogin from "../LoginForm/FireBaseLogin";
 import AudioRecorder from "../AudioRecorder";
+import { addMessage, ChatMessage, selectActiveHistoryId } from "../../lib/slices/Ai/AiSlice";
+const openAiApiKey = import.meta.env.VITE_OPENAI_KEY
 
 const PaymentCheckButton = ({
-  input,
   selectedAI,
-  activeHistoryId,
   setError,
-  setInput,
   promptType
 }: {
-  input: string;
   selectedAI: string;
-  activeHistoryId: string | null;
   setError: (message: string) => void;
-  setInput: (message: string) => void;
   promptType: PromptType
 }) => {
   const [isPaid, setIsPaid] = useState(false);
   const [amount] = useState(500);
   const isUserAuthenticated = useSelector(isAuthenticated);
-  const [isAudioMode, setIsAudioMode] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const activeHistoryId = useSelector(selectActiveHistoryId);
 
-  const toggleInputMode = () => {
-    setIsAudioMode(!isAudioMode);
-  };
 
   // Check payment status when component mounts
   useEffect(() => {
@@ -52,22 +43,51 @@ const PaymentCheckButton = ({
     checkPayment();
   }, [dispatch, isPaid, isUserAuthenticated]);
 
-  const handleSendMessage = () => {
-    if (!input.trim()) {
+  const handleSendMessage = async (audioUrl: string, file: File) => {
+    if (!audioUrl) {
       setError("Please enter some input.");
       return;
     }
+
+    const newMessageId = uuidv4()
+    const userNewMessage: ChatMessage = { id: newMessageId, role: 'user', content: "", isAudioLoading: false, audioUrl };
+    dispatch(addMessage({ historyId: activeHistoryId || "", message: userNewMessage }));
+    // Create form data for the audio file
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("model", "whisper-1");
+
+    // Fetch request to Whisper API (replace with actual endpoint)
+    const response = await fetch("https://api.openai.com/v1/audio/transcriptions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${openAiApiKey}`, // Replace with your actual API key
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to transcribe audio");
+    }
+
+    // Parse the response from the Whisper API
+    const data = await response.json();
+    const transcribedText = data.text; // The transcribed text from the Whisper API
+
+    console.log("transcribedText", transcribedText);
+
+    // convert audio to text
     setError("");
     dispatch(
       fetchChatResponse({
-        newMessageId: uuidv4(),
-        userMessage: input,
+        newMessageId: newMessageId,
+        userMessage: transcribedText,
+        audioUrl: audioUrl,
         aiType: selectedAI,
         historyId: activeHistoryId || "",
         promptType: promptType
       })
     );
-    setInput("");
   };
 
   useEffect(() => {
@@ -86,18 +106,15 @@ const PaymentCheckButton = ({
 
   return isPaid ? (
     <Box sx={{ mt: 2 }}>
-      <InputModeToggle isAudioMode={isAudioMode} toggleInputMode={toggleInputMode} />
       <Box sx={{
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center"
+
       }}>
-        {isAudioMode ? (
-          <AudioRecorder />
-        ) : (
-          <TextInput input={input} setInput={setInput} handleSendMessage={handleSendMessage} />
-        )}
+        <AudioRecorder onStopRecording={handleSendMessage} />
+
       </Box>
     </Box>
   ) : (

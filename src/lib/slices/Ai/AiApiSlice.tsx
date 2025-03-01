@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { addMessage, setLoading, setActiveHistory, updateContent, addImage } from './AiSlice';
-import { ChatMessage } from './AiSlice';
+// import { ChatMessage } from './AiSlice';
 import Request from '../../../Backend/apiCall';
 import { v4 as uuidv4 } from 'uuid';  // Import UUID library
 
 export const fetchChatResponse = createAsyncThunk(
   'chat/fetchResponse',
-  async ({ newMessageId, userMessage, aiType, historyId, promptType }: { newMessageId: string, userMessage: string, aiType: string, historyId: string, promptType: string }, { dispatch, getState }) => {
+  async ({ /*newMessageId,audioUrl,*/ userMessage, aiType, historyId, promptType }: { newMessageId: string, userMessage: string, aiType: string, historyId: string, promptType: string,audioUrl?:string }, { dispatch, getState }) => {
     dispatch(setLoading(true));
     const newMessageIdAssistant = uuidv4();
 
@@ -16,17 +16,6 @@ export const fetchChatResponse = createAsyncThunk(
       currentHistoryId = uuidv4();
       dispatch(setActiveHistory(currentHistoryId));
     }
-    dispatch(
-      updateContent({
-        historyId: currentHistoryId,
-        messageId: newMessageIdAssistant,
-        newContent: "Audio response",
-        isAudioLoading: true,
-      })
-    );
-    const userNewMessage: ChatMessage = { id: newMessageId, role: 'user', content: userMessage,isAudioLoading:false };
-    dispatch(addMessage({ historyId: currentHistoryId, message: userNewMessage }));
-
     // Get the entire chat history (messages) for the currentHistoryId
     const state: any = getState();
     const history = state.aiChat.histories.find((h: { historyId: string; }) => h.historyId === currentHistoryId);
@@ -42,10 +31,9 @@ export const fetchChatResponse = createAsyncThunk(
       dispatch(
         addMessage({
           historyId: currentHistoryId,
-          message: { id: newMessageIdAssistant, role: "assistant", content: "", isAudioLoading: promptType === "AUDIO" },
+          message: { id: newMessageIdAssistant, role: "assistant", content: "", isAudioLoading:true },
         })
       );
-
 
       if (response.contentType === "audio/mpeg") {
         // Handle audio streaming
